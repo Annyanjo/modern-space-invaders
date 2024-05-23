@@ -21,4 +21,26 @@ class Player {
         this.particles = [];
         this.frames = 0;
     }
+
+    draw(){
+        c.save();
+        c.globalAlpha = this.opacity;
+        c.translate(
+            player.position.x + player.width / 2,
+            plpayer.position.y + player.height / 2
+        );
+        c.rotate(this.rotation);
+        c.translate(
+            -player.position.x - player.width / 2,
+            -player.position.y - player.height / 2
+        );
+        c.drawImage(
+            this.image,
+            player.position.x,
+            player.position.y,
+            this.width,
+            this.height
+        );
+        c.restore();
+    }
 }
