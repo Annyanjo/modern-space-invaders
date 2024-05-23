@@ -16,7 +16,7 @@ class Invader {
             this.position = {
                 x: position.x,
                 y: position.y
-            }
-        } 
+            };
+        };
     }
 }
