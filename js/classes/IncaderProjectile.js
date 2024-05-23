@@ -10,4 +10,10 @@ class InvaderProjectile{
             c.fillSyle = "white"; 
             c.fillReact(this.position.x, this.position.y, this.width, this.height);
         }
+
+        update() {
+            this.draw();
+            this.position.x += this.velocity.x;
+            this.position.y += this.velocity.y;
+        }
     }
