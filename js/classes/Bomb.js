@@ -56,11 +56,11 @@ class Bomb {
     }
   }
 
-  class PowerUp(){
+  class PowerUp {
     constructor({ position, velocity}){
         this.position = position;
         this.velocity = velocity;
-        this.radius =15;
+        this.radius = 15;
     }
     draw(){
         c.beginPath();
@@ -71,7 +71,7 @@ class Bomb {
     }
 
 
-    update(){
+    update() {
         this.draw();
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
