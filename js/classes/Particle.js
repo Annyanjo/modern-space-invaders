@@ -18,4 +18,11 @@ class Particle {
         c.closePath();
         c.restore();
     }
+
+    update(){
+        this.draw();
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
+        if(this.fades) this.opacity -= 0.01;
+    }
 }
