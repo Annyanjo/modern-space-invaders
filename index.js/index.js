@@ -89,3 +89,23 @@ for(let i = 0; i< 100; i++){
     );
 }
 }
+
+function endGame() {
+    Audio.gameOver.play();
+
+    setTimemeout(() =>{
+        player.opacity = 0;
+        game.over = true;
+    }, 0);
+
+    setTimemeout(() =>{
+        game.active = false;
+        document.querySelector("#restartScreen").style.display = "flex";
+    }, 2000);
+
+    createParticles({
+        object: player,
+        color: "white",
+        fades: true
+    });
+}
