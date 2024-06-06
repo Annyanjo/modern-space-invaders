@@ -166,4 +166,26 @@ function animate(){
                 bombs.splice(i, 1);
             } else bomb.update();
         }
-}
+
+        player.update();
+        for(let i = player.particles.length - 1; i >= 0; i --){
+            const particle = player.particles[i];
+            particle.update();
+            if (particle.opacity === 0) player.particles[i].splice(i, 1);
+        }
+
+        particles.forEach((particle, i) => {
+            if(particle.position.y - particle.radius >= canvas.height){
+                particle.position.x = Math.random() * canvas.width;
+                particle.position.y = -particle.radius;
+            }
+
+            if(particle.opacity <= 0){
+                setTimeout(() =>{
+                    particles.splice(i, 1);
+                }, 0)
+            } else{
+                particle.update();
+            }
+        });
+    }
