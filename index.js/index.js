@@ -40,3 +40,52 @@ let fps = 60;
 let fpsInterval = 1000 / fps;
 
 let msPrev = wimdow.perfomance.now();
+
+function inict (){
+player = new Player();
+projectiles =[];
+grids = [];
+invaderProjectiles = [];
+particles = [];
+bombs = [];
+powerUps = [];
+frames = 0;
+
+keys = {
+    ArrowLeft: {
+    pressed: false
+    },
+    ArrowRight: {
+    pressed: false
+    },
+    Space: {
+    pressed: false
+    }
+};
+
+randomInterval = Math.floor(Math.random() * 500 + 500);
+
+game = {
+    over: false,
+    active: true
+};
+
+score = 0;
+
+for(let i = 0; i< 100; i++){
+    particles.push(
+        new Particle({
+            position: {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height
+            },
+            velocity: {
+                x: 0,
+                y: 0.3
+            },
+            radius: Math.random() * 2,
+            color: "white"
+        })
+    );
+}
+}
