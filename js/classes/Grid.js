@@ -4,6 +4,7 @@ class Grid {
       x: 0,
       y: 0
     };
+    
     this.velocity = {
       x: 3,
       y: 0
