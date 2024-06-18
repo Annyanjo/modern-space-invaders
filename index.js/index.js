@@ -408,5 +408,16 @@ function animate() {
       })
     );
   }
+
   frames++;
 }
+
+document.querySelector("#starButton").addEventListener("Click", () => {
+  audio.backgroundMusic.play();
+  audio.start.play();
+
+  document.querySelector("#starScreen").style.display = "none";
+  document.querySelector("#scoreContainer").style.display = "block";
+  inict();
+  animate();
+});
