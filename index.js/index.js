@@ -421,3 +421,10 @@ document.querySelector("#starButton").addEventListener("Click", () => {
   inict();
   animate();
 });
+
+document.querySelector("restarButton").addEventListener("click", () => {
+  audio.select.play();
+  document.querySelector("#restarScreen").style.display = "none";
+  inict();
+  animate();
+});
