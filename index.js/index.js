@@ -1,18 +1,17 @@
 const scoreEl = document.querySelector("#scoreEl");
 const canvas = document.querySelector("canvas");
-const c = document.getContext("2d");
+const c = canvas.getContext("2d");
 
 canvas.width = 1024;
 canvas.height = 576;
 
+let player = new Player();
 let projectiles = [];
 let grids = [];
 let invaderProjectiles = [];
 let particles = [];
 let bombs = [];
 let powerUps = [];
-
-let player = new Player();
 
 let keys = {
   ArrowLeft: {
@@ -21,7 +20,7 @@ let keys = {
   ArrowRight: {
     pressed: false
   },
-  Space: {
+  space: {
     pressed: false
   }
 };
@@ -35,14 +34,12 @@ let game = {
 };
 
 let score = 0;
-
 let spawnBuffer = 500;
 let fps = 60;
 let fpsInterval = 1000 / fps;
+let msPrev = window.performance.now();
 
-let msPrev = wimdow.perfomance.now();
-
-function inict() {
+function init() {
   player = new Player();
   projectiles = [];
   grids = [];
@@ -50,7 +47,6 @@ function inict() {
   particles = [];
   bombs = [];
   powerUps = [];
-  frames = 0;
 
   keys = {
     ArrowLeft: {
@@ -59,13 +55,13 @@ function inict() {
     ArrowRight: {
       pressed: false
     },
-    Space: {
+    space: {
       pressed: false
     }
   };
 
+  frames = 0;
   randomInterval = Math.floor(Math.random() * 500 + 500);
-
   game = {
     over: false,
     active: true
@@ -92,14 +88,14 @@ function inict() {
 }
 
 function endGame() {
-  Audio.gameOver.play();
+  audio.gameOver.play();
 
-  setTimemeout(() => {
+  setTimeout(() => {
     player.opacity = 0;
     game.over = true;
   }, 0);
 
-  setTimemeout(() => {
+  setTimeout(() => {
     game.active = false;
     document.querySelector("#restartScreen").style.display = "flex";
   }, 2000);
@@ -115,20 +111,22 @@ function animate() {
   if (!game.active) return;
   requestAnimationFrame(animate);
 
-  let msNow = window.performance.now();
-  let elapsed = msNow - msPrev;
+  const msNow = window.performance.now();
+  const elapsed = msNow - msPrev;
 
-  if (elapsed > fpsInterval) return;
+  if (elapsed < fpsInterval) return;
+
   msPrev = msNow - (elapsed % fpsInterval);
 
   c.fillStyle = "black";
   c.fillRect(0, 0, canvas.width, canvas.height);
 
   for (let i = powerUps.length - 1; i >= 0; i--) {
-    const powerUps = powerUps[1];
-    if (powerUps.position.x - powerUps.radius >= canvas.width)
+    const powerUp = powerUps[i];
+
+    if (powerUp.position.x - powerUp.radius >= canvas.width)
       powerUps.splice(i, 1);
-    else powerUps.update();
+    else powerUp.update();
   }
 
   if (frames % 500 === 0) {
@@ -136,7 +134,7 @@ function animate() {
       new PowerUp({
         position: {
           x: 0,
-          y: Math.round() * 300 + 15
+          y: Math.random() * 300 + 15
         },
         velocity: {
           x: 5,
@@ -163,6 +161,7 @@ function animate() {
 
   for (let i = bombs.length - 1; i >= 0; i--) {
     const bomb = bombs[i];
+
     if (bomb.opacity <= 0) {
       bombs.splice(i, 1);
     } else bomb.update();
@@ -173,6 +172,7 @@ function animate() {
   for (let i = player.particles.length - 1; i >= 0; i--) {
     const particle = player.particles[i];
     particle.update();
+
     if (particle.opacity === 0) player.particles[i].splice(i, 1);
   }
 
@@ -199,9 +199,7 @@ function animate() {
       setTimeout(() => {
         invaderProjectiles.splice(index, 1);
       }, 0);
-    } else {
-      invaderProjectile.update();
-    }
+    } else invaderProjectile.update();
 
     if (
       rectangularCollision({
@@ -265,7 +263,7 @@ function animate() {
     grid.update();
 
     if (frames % 100 === 0 && grid.invaders.length > 0) {
-      grid.fpsInterval[Math.floor(Math.random() * grid.invaders.length)].shoot(
+      grid.invaders[Math.floor(Math.random() * grid.invaders.length)].shoot(
         invaderProjectiles
       );
     }
@@ -290,7 +288,7 @@ function animate() {
           score += 50;
           scoreEl.innerHTML = score;
 
-          grid.invader.splice(i, 1);
+          grid.invaders.splice(i, 1);
           createScoreLabel({
             object: invader,
             score: 50
@@ -303,17 +301,17 @@ function animate() {
         }
       }
 
-      projectiles.forEach((projectiles, j) => {
+      projectiles.forEach((projectile, j) => {
         if (
-          projectiles.position.y - projectiles.radius <=
+          projectile.position.y - projectile.radius <=
             invader.position.y + invader.height &&
-          projectiles.position.x + projectiles.radius >= invader.position.x &&
-          projectiles.position.x - projectiles.radius <=
+          projectile.position.x + projectile.radius >= invader.position.x &&
+          projectile.position.x - projectile.radius <=
             invader.position.x + invader.width &&
-          projectiles.position.y + projectiles.radius >= invader.position.y
+          projectile.position.y + projectile.radius >= invader.position.y
         ) {
           setTimeout(() => {
-            const invaderFound = grid.invader.find(
+            const invaderFound = grid.invaders.find(
               (invader2) => invader2 === invader
             );
             const projectileFound = projectiles.find(
@@ -334,21 +332,20 @@ function animate() {
               });
 
               audio.explode.play();
-              grid.invader.splice(i, 1);
+              grid.invaders.splice(i, 1);
               projectiles.splice(j, 1);
 
-              if (grid.invader.length > 0) {
-                const firsInvader = grid.invadera[0];
-                const lastInvader = grid.invader[grid.invader.length - 1];
+              if (grid.invaders.length > 0) {
+                const firstInvader = grid.invaders[0];
+                const lastInvader = grid.invaders[grid.invaders.length - 1];
 
                 grid.width =
                   lastInvader.position.x -
-                  firsInvader.position.x +
-                  firsInvader.width;
-
-                grid.position.x = firsInvader.position.x;
+                  firstInvader.position.x +
+                  lastInvader.width;
+                grid.position.x = firstInvader.position.x;
               } else {
-                grid.splice(gridIndex, 1);
+                grids.splice(gridIndex, 1);
               }
             }
           }, 0);
@@ -365,6 +362,7 @@ function animate() {
         endGame();
     }
   });
+
   if (keys.ArrowLeft.pressed && player.position.x >= 0) {
     player.velocity.x = -7;
     player.rotation = -0.15;
@@ -388,10 +386,10 @@ function animate() {
   }
 
   if (
-    keys.Space.pressed &&
+    keys.space.pressed &&
     player.powerUp === "Metralhadora" &&
     frames % 2 === 0 &&
-    "game.over"
+    !game.over
   ) {
     if (frames % 6 === 0) audio.shoot.play();
     projectiles.push(
@@ -404,7 +402,7 @@ function animate() {
           x: 0,
           y: -10
         },
-        collor: "yellow"
+        color: "yellow"
       })
     );
   }
@@ -412,20 +410,20 @@ function animate() {
   frames++;
 }
 
-document.querySelector("#starButton").addEventListener("Click", () => {
+document.querySelector("#startButton").addEventListener("click", () => {
   audio.backgroundMusic.play();
   audio.start.play();
 
-  document.querySelector("#starScreen").style.display = "none";
+  document.querySelector("#startScreen").style.display = "none";
   document.querySelector("#scoreContainer").style.display = "block";
-  inict();
+  init();
   animate();
 });
 
-document.querySelector("restarButton").addEventListener("click", () => {
+document.querySelector("#restartButton").addEventListener("click", () => {
   audio.select.play();
-  document.querySelector("#restarScreen").style.display = "none";
-  inict();
+  document.querySelector("#restartScreen").style.display = "none";
+  init();
   animate();
 });
 
@@ -440,7 +438,7 @@ addEventListener("keydown", ({ key }) => {
       keys.ArrowRight.pressed = true;
       break;
     case " ":
-      keys.Space.pressed = true;
+      keys.space.pressed = true;
 
       if (player.powerUp === "Metralhadora") return;
 
@@ -457,6 +455,7 @@ addEventListener("keydown", ({ key }) => {
           }
         })
       );
+
       break;
   }
 });
@@ -470,7 +469,8 @@ addEventListener("keyup", ({ key }) => {
       keys.ArrowRight.pressed = false;
       break;
     case " ":
-      keys.Space.pressed = false;
+      keys.space.pressed = false;
+
       break;
   }
 });
