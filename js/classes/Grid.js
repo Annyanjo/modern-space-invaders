@@ -1,10 +1,10 @@
 class Grid {
   constructor() {
-    this.proom = {
+    this.position = {
       x: 0,
       y: 0
     };
-    
+
     this.velocity = {
       x: 3,
       y: 0
@@ -12,17 +12,18 @@ class Grid {
 
     this.invaders = [];
 
-    const columns = Math.floor(Math.random() * 18 + 5);
-    const rows = Math.floor(Math.random() * 10 + 2);
+    const columns = Math.floor(Math.random() * 10 + 5);
+    const rows = Math.floor(Math.random() * 5 + 2);
+
     this.width = columns * 30;
 
-    for (let i = 0; i < columns; i++) {
-      for (let j = 0; j < rows; j++) {
+    for (let x = 0; x < columns; x++) {
+      for (let y = 0; y < rows; y++) {
         this.invaders.push(
-          new this.invaders({
+          new Invader({
             position: {
-              i: i * 30,
-              j: j * 30
+              x: x * 30,
+              y: y * 30
             }
           })
         );
@@ -33,6 +34,7 @@ class Grid {
   update() {
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+
     this.velocity.y = 0;
 
     if (this.position.x + this.width >= canvas.width || this.position.x <= 0) {
