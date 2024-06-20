@@ -13,7 +13,7 @@ function createScoreLabel({ score = 100, object }) {
 
   document.querySelector("#parentDiv").appendChild(scoreLabel);
 
-  gsap.top(scoreLabel, {
+  gsap.to(scoreLabel, {
     opacity: 0,
     y: -30,
     duration: 0.75,
@@ -44,8 +44,8 @@ function createParticles({ object, color, fades }) {
           y: (Math.random() - 0.5) * 2
         },
         radius: Math.random() * 3,
-        color: color || "BAA0DE",
-        fades: fades
+        color: color || "#BAA0DE",
+        fades
       })
     );
   }
