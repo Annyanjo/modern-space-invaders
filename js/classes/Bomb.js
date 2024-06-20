@@ -4,7 +4,7 @@ class Bomb {
     this.position = position;
     this.velocity = velocity;
     this.radius = 0;
-    this.color = " ";
+    this.color = "red";
     this.opacity = 1;
     this.active = false;
 
@@ -38,9 +38,9 @@ class Bomb {
       this.position.y + this.radius + this.velocity.y >= canvas.height ||
       this.position.y - this.radius + this.velocity.y <= 0
     )
-      this.velocity.y = this.velocity.y;
+      this.velocity.y = -this.velocity.y;
   }
-  
+
   explode() {
     audio.bomb.play();
     this.active = true;
